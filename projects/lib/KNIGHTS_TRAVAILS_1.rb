@@ -2,38 +2,51 @@ require "byebug"
 require_relative 'tree_node'
 class KnightPathFinder
     attr_accessor :pos, :board, :considered_positions
+    MOVES = [[1, 2], 
+            [2, 1],
+            [2, -1],
+            [1, -2],
+            [-1, 2],
+            [-2, 1],
+            [-1, -2], 
+            [- 2,  - 1]]
 
-    def valid_moves(pos)
+    def self.valid_moves(pos)
         array = []
         x, y = pos 
-        array.push([x + 1, y + 2], 
-        [x + 2, y + 1],
-        [x + 2, y - 1],
-        [x + 1, y - 2],
-        [x - 1, y + 2],
-        [x - 2, y + 1],
-        [x - 1, y - 2], 
-        [x - 2, y - 1])
+        MOVES.each do |move| 
+            dx, dy = move
+            new_move = [dx + x, dy + y]
+            array << new_move if new_move.all? { |coord| coord >= 0 && coord < 8}
+        end
+
+        array
+            end
+
+        #     array.push([x + 1, y + 2], 
+        #     [x + 2, y + 1],
+        #     [x + 2, y - 1],
+        #     [x + 1, y - 2],
+        #     [x - 1, y + 2],
+        #     [x - 2, y + 1],
+        #     [x - 1, y - 2], 
+        #     [x - 2, y - 1])
+
+        # return array.select!{|subs| subs.all?{|el| el < 8 && el >= 0}}
 
 
-        array.select!{|subs| subs.all?{|el| el < 8 && el >= 0}}
-
-    end
 
     def initialize(pos)
         @pos = pos
         @root_node = PolyTreeNode.new(@pos) 
-        @board = Array.new(8) {Array.new(8,"")}
+        @board = Array.new(8) {Array.new(8)}
         @considered_positions = [@pos]
     end
 
     def new_move_positions(pos)
-        
-        valid_moves = KnightPathFinder.valid_moves(pos)
-        valid_moves.select!{ |move| !considered_positions.include?(move)}
-        considered_positions += valid_moves
-        valid_moves
-
+        valid_move = KnightPathFinder.valid_moves(pos).select{|el| !considered_positions.include?(el)}
+        considered_positions.concat(valid_move)
+        valid_move
     end
 
     def build_move_tree
