@@ -15,7 +15,7 @@ class KnightPathFinder
         [x - 2, y - 1])
 
         array.select!{|subs| subs.all?{|el| el < 8 && el >= 0}}
-        print array
+      
 
     end
 
@@ -25,6 +25,21 @@ class KnightPathFinder
         @board = Array.new(8) {Array.new(8,"")}
         @considered_positions = [@pos]
     end
-        
+    def new_move_positions(pos)
+        considered_positions << pos if !considered_positions.include?(pos) 
+        return valid_moves(pos)
+    end
+    def build_move_tree
+        queue=[@root_node]
+        while !queue.empty?
+            el=queue.shift
+            if el.pos == [7,7]
+                return true 
+            else
+                queue << valid_moves(el)
+            end
+        end
+        return nil 
+    end
 end
 
