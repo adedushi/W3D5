@@ -1,7 +1,7 @@
 require "byebug"
 require_relative 'tree_node'
 class KnightPathFinder
-    attr_accessor :pos, :board, :considered_positions
+    attr_accessor :pos, :board, :considered_positions, :root_node
     MOVES = [[1, 2], 
             [2, 1],
             [2, -1],
@@ -61,7 +61,17 @@ class KnightPathFinder
             end
         end
     end
-
+    def find_path(end_pos)
+        final_node =self.root_node.dfs(end_pos)
+    end
+    def trace_path_back(start_pos,end_pos)
+        trace =[start_pos]
+        until trace[-1] == end_pos
+            trace << start_pos.parent 
+            start_pos= trace[-1]
+        end
+        return trace
+    end
 
 end
 
